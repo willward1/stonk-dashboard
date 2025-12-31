@@ -1,0 +1,259 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+header {
+    text-align: center;
+    color: white;
+    margin-bottom: 40px;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+.search-section {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+    display: flex;
+    gap: 10px;
+}
+
+#stockInput {
+    flex: 1;
+    padding: 12px 20px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+#stockInput:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+#addStockBtn {
+    padding: 12px 30px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#addStockBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+#addStockBtn:active {
+    transform: translateY(0);
+}
+
+.watchlist-section, .events-section {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
+
+.watchlist-section h2, .events-section h2 {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+}
+
+.stock-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.stock-card {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    padding: 20px;
+    border-radius: 10px;
+    position: relative;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.stock-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.stock-card.positive {
+    background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);
+}
+
+.stock-card.negative {
+    background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+}
+
+.stock-symbol {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.stock-name {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 15px;
+}
+
+.stock-price {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.stock-change {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.stock-change.positive {
+    color: #22c55e;
+}
+
+.stock-change.negative {
+    color: #ef4444;
+}
+
+.stock-metrics {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.metric {
+    font-size: 0.85rem;
+}
+
+.metric-label {
+    color: #666;
+    margin-bottom: 3px;
+}
+
+.metric-value {
+    font-weight: 600;
+    color: #333;
+}
+
+.remove-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(239, 68, 68, 0.8);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.2s;
+}
+
+.remove-btn:hover {
+    background: rgba(239, 68, 68, 1);
+}
+
+.loading {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+    font-size: 1.1rem;
+}
+
+.error {
+    background: #fee;
+    border: 1px solid #fcc;
+    color: #c33;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.events-log {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.event-item {
+    padding: 15px;
+    border-left: 4px solid #667eea;
+    background: #f8f9fa;
+    margin-bottom: 10px;
+    border-radius: 4px;
+}
+
+.event-item.price-jump {
+    border-left-color: #22c55e;
+}
+
+.event-item.price-drop {
+    border-left-color: #ef4444;
+}
+
+.event-time {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.event-message {
+    color: #333;
+    font-weight: 500;
+}
+
+footer {
+    text-align: center;
+    color: white;
+    padding: 20px;
+    opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+    .search-section {
+        flex-direction: column;
+    }
+
+    .stock-grid {
+        grid-template-columns: 1fr;
+    }
+}
