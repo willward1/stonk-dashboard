@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RKLB Stock Chart</title>
+    <title>RKLB Dashboard</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
         <header>
             <h1>RKLB - Rocket Lab USA Inc.</h1>
-            <p class="subtitle">1 Year Stock Price Chart</p>
+            <p class="subtitle">Comprehensive Stock & Company Dashboard</p>
         </header>
 
         <div class="chart-container">
@@ -20,9 +20,100 @@
             </div>
             <!-- TradingView Widget END -->
         </div>
+
+        <div class="dashboard-grid">
+            <!-- Catalysts Section -->
+            <div class="catalysts-section">
+                <h2>Key Catalysts & Events</h2>
+
+                <div class="catalyst-group">
+                    <h3>Upcoming 2026 Catalysts</h3>
+                    <ul>
+                        <li><strong>Neutron Rocket Inaugural Launch</strong> (Q1-Mid 2026) - Major inflection point, 3-5 launches planned</li>
+                        <li><strong>SDA Tranche 3 Additional Contracts</strong> - Up to $700M expected</li>
+                        <li><strong>NASA MTO/MSA Contract</strong> - Up to $700M for Mars missions</li>
+                        <li><strong>Mynaric Acquisition Closing</strong> - Laser communications tech</li>
+                        <li><strong>Positive EBITDA</strong> forecast for 2026</li>
+                        <li><strong>SpaceX IPO</strong> - Potential sector revaluation catalyst</li>
+                        <li><strong>32 Electron/HASTE Launches</strong> planned</li>
+                        <li><strong>VICTUS HAZE & LOXSAT Missions</strong> - Defense & tech demos</li>
+                    </ul>
+                </div>
+
+                <div class="catalyst-group">
+                    <h3>Recent Wins (2024-2025)</h3>
+                    <ul>
+                        <li><strong>$816M SDA Tranche 3 Contract</strong> - 18 satellites (Dec 2025)</li>
+                        <li><strong>$5.6B NSSL Phase 3 Selection</strong> - National security launches through 2029</li>
+                        <li><strong>21 Electron Launches</strong> - 100% success rate in 2025</li>
+                        <li><strong>Record $600M Revenue</strong> - Backlog $1.3B+ in 2025</li>
+                        <li><strong>Q3 Revenue $155M</strong> - Up 48% YoY</li>
+                        <li><strong>ESCAPADE Mars Mission</strong> - Deep-space capability proof</li>
+                    </ul>
+                </div>
+
+                <div class="catalyst-group">
+                    <h3>Analyst Targets</h3>
+                    <ul>
+                        <li>Street-high: $90-100 (Needham)</li>
+                        <li>Bull case: $150-200 by end 2026</li>
+                        <li>Key level: $80 breakout target</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Info Feeds Section -->
+            <div class="info-feeds">
+                <!-- Twitter Feed -->
+                <div class="feed-section">
+                    <h2>Twitter: $RKLB</h2>
+                    <div class="feed-container">
+                        <a class="twitter-timeline"
+                           data-height="400"
+                           data-theme="light"
+                           href="https://twitter.com/search?q=%24RKLB&src=typed_query&f=live">
+                            Loading $RKLB tweets...
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Google News -->
+                <div class="feed-section">
+                    <h2>Latest News</h2>
+                    <div class="news-links">
+                        <a href="https://news.google.com/search?q=Rocket%20Lab%20RKLB&hl=en-US&gl=US&ceid=US:en"
+                           target="_blank"
+                           class="news-button">
+                            Open Google News for Rocket Lab
+                        </a>
+                        <iframe src="https://news.google.com/search?q=Rocket%20Lab%20RKLB&hl=en-US&gl=US&ceid=US:en"
+                                frameborder="0"
+                                class="news-frame">
+                        </iframe>
+                    </div>
+                </div>
+
+                <!-- Press Releases -->
+                <div class="feed-section">
+                    <h2>Official Press Releases</h2>
+                    <div class="press-container">
+                        <a href="https://www.rocketlabusa.com/updates/"
+                           target="_blank"
+                           class="news-button">
+                            Open Rocket Lab Updates Page
+                        </a>
+                        <iframe src="https://www.rocketlabusa.com/updates/"
+                                frameborder="0"
+                                class="press-frame">
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
     <script type="text/javascript">
         new TradingView.widget({
             "width": "100%",
