@@ -3,35 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stock Events Dashboard</title>
+    <title>RKLB Stock Chart</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>📈 Stock Events Dashboard</h1>
-            <p class="subtitle">Real-time stock monitoring and events</p>
+            <h1>RKLB - Rocket Lab USA Inc.</h1>
+            <p class="subtitle">1 Year Stock Price Chart</p>
         </header>
 
-        <div class="search-section">
-            <input type="text" id="stockInput" placeholder="Enter stock symbol (e.g., AAPL, GOOGL, TSLA)" />
-            <button id="addStockBtn">Add Stock</button>
-        </div>
-
-        <div class="watchlist-section">
-            <h2>My Watchlist</h2>
-            <div id="stockCards" class="stock-grid"></div>
-        </div>
-
-        <div class="events-section">
-            <h2>Recent Events</h2>
-            <div id="eventsLog" class="events-log"></div>
+        <div class="chart-container">
+            <canvas id="stockChart"></canvas>
         </div>
     </div>
-
-    <footer>
-        <p>Data provided by Yahoo Finance • Updates every 60 seconds</p>
-    </footer>
 
     <script src="app.js"></script>
 </body>

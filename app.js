@@ -1,64 +1,11 @@
-// Stock Events Dashboard
-const stockInput = document.getElementById('stockInput');
-const addStockBtn = document.getElementById('addStockBtn');
-const stockCards = document.getElementById('stockCards');
-const eventsLog = document.getElementById('eventsLog');
+// RKLB 1-Year Stock Chart
+const symbol = 'RKLB';
+let chart;
 
-let watchlist = [];
-let previousPrices = {};
-let updateInterval;
-
-// Load watchlist from localStorage
-function loadWatchlist() {
-    const saved = localStorage.getItem('stockWatchlist');
-    if (saved) {
-        watchlist = JSON.parse(saved);
-        watchlist.forEach(symbol => fetchStockData(symbol));
-    } else {
-        // Add some default stocks
-        watchlist = ['AAPL', 'GOOGL', 'MSFT'];
-        saveWatchlist();
-        watchlist.forEach(symbol => fetchStockData(symbol));
-    }
-}
-
-// Save watchlist to localStorage
-function saveWatchlist() {
-    localStorage.setItem('stockWatchlist', JSON.stringify(watchlist));
-}
-
-// Add stock to watchlist
-function addStock() {
-    const symbol = stockInput.value.trim().toUpperCase();
-    if (!symbol) return;
-
-    if (watchlist.includes(symbol)) {
-        addEvent(`${symbol} is already in your watchlist`, 'info');
-        stockInput.value = '';
-        return;
-    }
-
-    watchlist.push(symbol);
-    saveWatchlist();
-    fetchStockData(symbol);
-    stockInput.value = '';
-    addEvent(`Added ${symbol} to watchlist`, 'info');
-}
-
-// Remove stock from watchlist
-function removeStock(symbol) {
-    watchlist = watchlist.filter(s => s !== symbol);
-    saveWatchlist();
-    delete previousPrices[symbol];
-    updateStockCards();
-    addEvent(`Removed ${symbol} from watchlist`, 'info');
-}
-
-// Fetch stock data using Yahoo Finance API
-async function fetchStockData(symbol) {
+async function fetchStockData() {
     try {
-        // Using a free Yahoo Finance API proxy
-        const response = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=1d&range=1d`);
+        // Fetch 1 year of data from Yahoo Finance
+        const response = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=1d&range=1y`);
 
         if (!response.ok) {
             throw new Error('Failed to fetch stock data');
@@ -71,173 +18,135 @@ async function fetchStockData(symbol) {
         }
 
         const result = data.chart.result[0];
-        const quote = result.meta;
-        const indicators = result.indicators.quote[0];
+        const timestamps = result.timestamp;
+        const prices = result.indicators.quote[0].close;
 
-        const stockData = {
-            symbol: symbol,
-            name: quote.shortName || symbol,
-            price: quote.regularMarketPrice,
-            change: quote.regularMarketPrice - quote.previousClose,
-            changePercent: ((quote.regularMarketPrice - quote.previousClose) / quote.previousClose) * 100,
-            open: indicators.open[0],
-            high: Math.max(...indicators.high.filter(h => h !== null)),
-            low: Math.min(...indicators.low.filter(l => l !== null)),
-            volume: indicators.volume[indicators.volume.length - 1],
-            marketCap: quote.marketCap
-        };
+        // Convert timestamps to dates
+        const dates = timestamps.map(ts => {
+            const date = new Date(ts * 1000);
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        });
 
-        checkPriceEvents(stockData);
-        updateStockCard(stockData);
+        // Filter out null prices
+        const cleanedData = dates.map((date, index) => ({
+            date,
+            price: prices[index]
+        })).filter(item => item.price !== null);
+
+        const labels = cleanedData.map(item => item.date);
+        const priceData = cleanedData.map(item => item.price);
+
+        createChart(labels, priceData);
 
     } catch (error) {
-        console.error(`Error fetching ${symbol}:`, error);
-        addEvent(`Failed to fetch data for ${symbol}: ${error.message}`, 'error');
-
-        // Show error in card
-        updateStockCard({
-            symbol: symbol,
-            error: error.message
-        });
+        console.error('Error fetching stock data:', error);
+        document.querySelector('.chart-container').innerHTML = `
+            <div style="text-align: center; padding: 100px 20px;">
+                <h2 style="color: #ef4444; margin-bottom: 10px;">Failed to Load Chart</h2>
+                <p style="color: #666;">${error.message}</p>
+                <button onclick="location.reload()" style="margin-top: 20px; padding: 12px 24px; background: #333; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 1rem;">
+                    Retry
+                </button>
+            </div>
+        `;
     }
 }
 
-// Check for significant price events
-function checkPriceEvents(stockData) {
-    const { symbol, price, changePercent } = stockData;
+function createChart(labels, data) {
+    const ctx = document.getElementById('stockChart').getContext('2d');
 
-    if (previousPrices[symbol]) {
-        const priceDiff = ((price - previousPrices[symbol]) / previousPrices[symbol]) * 100;
+    // Calculate gradient
+    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, 'rgba(34, 197, 94, 0.3)');
+    gradient.addColorStop(1, 'rgba(34, 197, 94, 0)');
 
-        if (Math.abs(priceDiff) > 1) {
-            const eventType = priceDiff > 0 ? 'price-jump' : 'price-drop';
-            const direction = priceDiff > 0 ? 'jumped' : 'dropped';
-            addEvent(
-                `${symbol} ${direction} ${Math.abs(priceDiff).toFixed(2)}% to $${price.toFixed(2)}`,
-                eventType
-            );
+    chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'RKLB Price (USD)',
+                data: data,
+                borderColor: '#22c55e',
+                backgroundColor: gradient,
+                borderWidth: 2,
+                fill: true,
+                tension: 0.1,
+                pointRadius: 0,
+                pointHoverRadius: 6,
+                pointHoverBackgroundColor: '#22c55e',
+                pointHoverBorderColor: 'white',
+                pointHoverBorderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+                intersect: false,
+                mode: 'index'
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top',
+                    labels: {
+                        font: {
+                            size: 14,
+                            weight: '600'
+                        },
+                        padding: 20
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    padding: 12,
+                    titleFont: {
+                        size: 14,
+                        weight: 'bold'
+                    },
+                    bodyFont: {
+                        size: 13
+                    },
+                    callbacks: {
+                        label: function(context) {
+                            return 'Price: $' + context.parsed.y.toFixed(2);
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        maxRotation: 45,
+                        minRotation: 45,
+                        font: {
+                            size: 11
+                        },
+                        maxTicksLimit: 12
+                    }
+                },
+                y: {
+                    beginAtZero: false,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    },
+                    ticks: {
+                        callback: function(value) {
+                            return '$' + value.toFixed(2);
+                        },
+                        font: {
+                            size: 12
+                        }
+                    }
+                }
+            }
         }
-    }
-
-    // Alert on significant daily changes
-    if (Math.abs(changePercent) > 5) {
-        const eventType = changePercent > 0 ? 'price-jump' : 'price-drop';
-        addEvent(
-            `${symbol} is ${changePercent > 0 ? 'up' : 'down'} ${Math.abs(changePercent).toFixed(2)}% today!`,
-            eventType
-        );
-    }
-
-    previousPrices[symbol] = price;
+    });
 }
 
-// Add event to events log
-function addEvent(message, type = 'info') {
-    const now = new Date();
-    const timeString = now.toLocaleTimeString();
-
-    const eventItem = document.createElement('div');
-    eventItem.className = `event-item ${type}`;
-    eventItem.innerHTML = `
-        <div class="event-time">${timeString}</div>
-        <div class="event-message">${message}</div>
-    `;
-
-    eventsLog.insertBefore(eventItem, eventsLog.firstChild);
-
-    // Keep only last 20 events
-    while (eventsLog.children.length > 20) {
-        eventsLog.removeChild(eventsLog.lastChild);
-    }
-}
-
-// Update stock card display
-function updateStockCard(stockData) {
-    const existingCard = document.querySelector(`[data-symbol="${stockData.symbol}"]`);
-
-    if (stockData.error) {
-        if (existingCard) {
-            existingCard.innerHTML = `
-                <button class="remove-btn" onclick="removeStock('${stockData.symbol}')">×</button>
-                <div class="stock-symbol">${stockData.symbol}</div>
-                <div class="error">Failed to load: ${stockData.error}</div>
-            `;
-        }
-        return;
-    }
-
-    const isPositive = stockData.change >= 0;
-    const cardClass = isPositive ? 'positive' : 'negative';
-    const changeClass = isPositive ? 'positive' : 'negative';
-    const changeSymbol = isPositive ? '+' : '';
-
-    const cardHTML = `
-        <button class="remove-btn" onclick="removeStock('${stockData.symbol}')">×</button>
-        <div class="stock-symbol">${stockData.symbol}</div>
-        <div class="stock-name">${stockData.name}</div>
-        <div class="stock-price">$${stockData.price.toFixed(2)}</div>
-        <div class="stock-change ${changeClass}">
-            ${changeSymbol}${stockData.change.toFixed(2)} (${changeSymbol}${stockData.changePercent.toFixed(2)}%)
-        </div>
-        <div class="stock-metrics">
-            <div class="metric">
-                <div class="metric-label">Open</div>
-                <div class="metric-value">$${stockData.open?.toFixed(2) || 'N/A'}</div>
-            </div>
-            <div class="metric">
-                <div class="metric-label">High</div>
-                <div class="metric-value">$${stockData.high?.toFixed(2) || 'N/A'}</div>
-            </div>
-            <div class="metric">
-                <div class="metric-label">Low</div>
-                <div class="metric-value">$${stockData.low?.toFixed(2) || 'N/A'}</div>
-            </div>
-            <div class="metric">
-                <div class="metric-label">Volume</div>
-                <div class="metric-value">${formatVolume(stockData.volume)}</div>
-            </div>
-        </div>
-    `;
-
-    if (existingCard) {
-        existingCard.className = `stock-card ${cardClass}`;
-        existingCard.innerHTML = cardHTML;
-    } else {
-        const card = document.createElement('div');
-        card.className = `stock-card ${cardClass}`;
-        card.setAttribute('data-symbol', stockData.symbol);
-        card.innerHTML = cardHTML;
-        stockCards.appendChild(card);
-    }
-}
-
-// Update all stock cards
-function updateStockCards() {
-    stockCards.innerHTML = '';
-    watchlist.forEach(symbol => fetchStockData(symbol));
-}
-
-// Format volume for display
-function formatVolume(volume) {
-    if (!volume) return 'N/A';
-    if (volume >= 1e9) return (volume / 1e9).toFixed(2) + 'B';
-    if (volume >= 1e6) return (volume / 1e6).toFixed(2) + 'M';
-    if (volume >= 1e3) return (volume / 1e3).toFixed(2) + 'K';
-    return volume.toString();
-}
-
-// Event listeners
-addStockBtn.addEventListener('click', addStock);
-stockInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') addStock();
-});
-
-// Initialize
-loadWatchlist();
-addEvent('Dashboard initialized - monitoring stocks', 'info');
-
-// Auto-refresh every 60 seconds
-updateInterval = setInterval(() => {
-    watchlist.forEach(symbol => fetchStockData(symbol));
-    addEvent('Stock data refreshed', 'info');
-}, 60000);
+// Initialize chart on page load
+fetchStockData();

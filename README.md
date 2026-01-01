@@ -1,44 +1,27 @@
-# Stock Events Dashboard
+# RKLB Stock Chart
 
-A real-time stock monitoring dashboard that tracks stock prices and events using Yahoo Finance data.
+A clean, minimal 1-year stock price chart for Rocket Lab USA Inc. (RKLB).
 
 ## Features
 
-- **Real-time Stock Monitoring**: Track multiple stocks simultaneously
-- **Price Change Alerts**: Get notified of significant price movements
-- **Stock Metrics**: View open, high, low, and volume data
-- **Events Log**: Track all price changes and events in real-time
-- **Persistent Watchlist**: Your watchlist is saved locally
-- **Auto-refresh**: Data updates every 60 seconds
-
-## Usage
-
-1. Enter a stock symbol (e.g., AAPL, GOOGL, TSLA) in the search box
-2. Click "Add Stock" to add it to your watchlist
-3. View real-time price data and changes
-4. Monitor the events log for significant price movements
-5. Click the × button on any stock card to remove it from your watchlist
+- **1-Year Historical Data**: View RKLB stock price over the past year
+- **Interactive Chart**: Hover over the chart to see exact prices on specific dates
+- **Real-time Data**: Powered by Yahoo Finance API
+- **Responsive Design**: Works beautifully on desktop and mobile devices
 
 ## Technologies
 
 - Plain HTML/CSS/JavaScript
-- Yahoo Finance API
-- LocalStorage for data persistence
+- Chart.js for visualization
+- Yahoo Finance API for stock data
 
-## Default Stocks
+## Live Demo
 
-The dashboard comes pre-loaded with:
-- AAPL (Apple)
-- GOOGL (Google)
-- MSFT (Microsoft)
+Visit the live dashboard at: https://willward1.github.io/stonk-dashboard/
 
-## Deployment
+## About RKLB
 
-This dashboard is designed to be deployed on GitHub Pages. The app runs entirely in the browser with no backend required.
-
-## Data Source
-
-Stock data is provided by Yahoo Finance via their public API. Data updates every 60 seconds during market hours.
+Rocket Lab USA Inc. (NASDAQ: RKLB) is an American aerospace manufacturer and launch service provider.
 
 ## License
 
